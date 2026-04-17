@@ -169,17 +169,27 @@ def check_availability(page, url, retries=2):
 # MAIN LOOP
 # =========================
 with sync_playwright() as p:
+    #context = p.chromium.launch_persistent_context(
+        #user_data_dir="ticketmaster_profile",
+        #headless=True,
+        #user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        #locale="es-MX",
+        #timezone_id="America/Mexico_City"
+    #)
     context = p.chromium.launch_persistent_context(
         user_data_dir="ticketmaster_profile",
         headless=True,
+        proxy={
+            "server": "http://31.59.20.176:6754",
+            "username": "modsedkf",
+            "password": "5prxrbs8ik1d"
+        },
         user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         locale="es-MX",
         timezone_id="America/Mexico_City"
     )
 
-
-
-
+    
     page = context.new_page()
 
     while True:
@@ -222,6 +232,6 @@ with sync_playwright() as p:
             except Exception as e:
                 print(f"Error en {date}: {e}")
 
-        wait_time = random.randint(35, 50)
+        wait_time = random.randint(40, 60)
         print(f"Esperando {wait_time} segundos...\n")
         time.sleep(wait_time)
