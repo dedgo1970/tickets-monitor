@@ -1,14 +1,24 @@
 # Último Script ejecutandose correctamente
-# 15/04/2026
+# 16/04/2026
 
 from playwright.sync_api import sync_playwright
 import requests
 import time
 import random
 import smtplib
+import pytz
+import locale
 from datetime import datetime
 from email.mime.text import MIMEText
 
+# Zona horaria México
+MEXICO_TZ = pytz.timezone("America/Mexico_City")
+
+# Locale en español
+try:
+    locale.setlocale(locale.LC_TIME, "es_MX.UTF-8")
+except Exception:
+    pass  # Si el servidor no tiene el locale, no falla
 
 # =========================
 # EVENTOS A MONITOREAR
@@ -63,7 +73,7 @@ def send_telegram_alert(date, url, persistent=False):
     message = (
         f"{title}\n\n"
         f"📅 Fecha: {date}\n"
-        f"🕒 Hora: {datetime.now().strftime('%H:%M:%S')}\n"
+        f"🕒 Hora: {datetime.now(MEXICO_TZ).strftime('%H:%M:%S')}\n"
         f"🎟️ Link: {url}"
     )
 
@@ -100,7 +110,7 @@ def send_email_alert(date, url, persistent=False):
     body = (
         f"{subject}\n\n"
         f"Fecha: {date}\n"
-        f"Hora: {datetime.now().strftime('%H:%M:%S')}\n"
+        f"Hora: {datetime.now(MEXICO_TZ).strftime('%H:%M:%S')}\n"
         f"Link: {url}"
     )
 
@@ -171,13 +181,17 @@ def check_availability(page, url, retries=2):
 with sync_playwright() as p:
     context = p.chromium.launch_persistent_context(
         user_data_dir="ticketmaster_profile",
-        headless=True
+        headless=True,
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        locale="es-MX",
+        timezone_id="America/Mexico_City"
     )
 
     page = context.new_page()
 
     while True:
-        print(f"\n🕐 {datetime.now().strftime('%H:%M:%S - %d de %B')}")
+        now_mx = datetime.now(MEXICO_TZ)
+        print(f"\n🕐 {now_mx.strftime('%H:%M:%S - %d de %B')}")
         print("Revisando disponibilidad...")
 
         simulated_urls = URLS.copy()
