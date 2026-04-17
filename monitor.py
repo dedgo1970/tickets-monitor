@@ -1,24 +1,14 @@
 # Último Script ejecutandose correctamente
-# 16/04/2026
+# 15/04/2026
 
 from playwright.sync_api import sync_playwright
 import requests
 import time
 import random
 import smtplib
-import pytz
-import locale
 from datetime import datetime
 from email.mime.text import MIMEText
 
-# Zona horaria México
-MEXICO_TZ = pytz.timezone("America/Mexico_City")
-
-# Locale en español
-try:
-    locale.setlocale(locale.LC_TIME, "es_MX.UTF-8")
-except Exception:
-    pass  # Si el servidor no tiene el locale, no falla
 
 # =========================
 # EVENTOS A MONITOREAR
@@ -73,7 +63,7 @@ def send_telegram_alert(date, url, persistent=False):
     message = (
         f"{title}\n\n"
         f"📅 Fecha: {date}\n"
-        f"🕒 Hora: {datetime.now(MEXICO_TZ).strftime('%H:%M:%S')}\n"
+        f"🕒 Hora: {datetime.now().strftime('%H:%M:%S')}\n"
         f"🎟️ Link: {url}"
     )
 
@@ -110,7 +100,7 @@ def send_email_alert(date, url, persistent=False):
     body = (
         f"{subject}\n\n"
         f"Fecha: {date}\n"
-        f"Hora: {datetime.now(MEXICO_TZ).strftime('%H:%M:%S')}\n"
+        f"Hora: {datetime.now().strftime('%H:%M:%S')}\n"
         f"Link: {url}"
     )
 
@@ -187,11 +177,13 @@ with sync_playwright() as p:
         timezone_id="America/Mexico_City"
     )
 
+
+
+
     page = context.new_page()
 
     while True:
-        now_mx = datetime.now(MEXICO_TZ)
-        print(f"\n🕐 {now_mx.strftime('%H:%M:%S - %d de %B')}")
+        print(f"\n🕐 {datetime.now().strftime('%H:%M:%S - %d de %B')}")
         print("Revisando disponibilidad...")
 
         simulated_urls = URLS.copy()
@@ -230,6 +222,6 @@ with sync_playwright() as p:
             except Exception as e:
                 print(f"Error en {date}: {e}")
 
-        wait_time = random.randint(30, 45)
+        wait_time = random.randint(35, 50)
         print(f"Esperando {wait_time} segundos...\n")
         time.sleep(wait_time)
