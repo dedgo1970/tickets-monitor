@@ -8,13 +8,7 @@ import random
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
-import locale
 
-# Formato de fecha y hora en español
-try:
-    locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')      # Linux
-except:
-    locale.setlocale(locale.LC_TIME, 'Spanish_Mexico.1252')  # Windows 
 
 # =========================
 # EVENTOS A MONITOREAR
